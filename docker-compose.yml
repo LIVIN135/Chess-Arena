@@ -1,0 +1,88 @@
+services:
+  # ----------------------------------------------------
+  # 1. PostgreSQL Database Service
+  # ----------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: chess-arena-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME:-chess_arena}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-chess_arena}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - chess-network
+
+  # ----------------------------------------------------
+  # 2. Spring Boot Backend REST & WebSocket Service
+  # ----------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chess-arena-backend
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-chess_arena}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SERVER_PORT: 8080
+      CLIENT_URL: ${CLIENT_URL:-http://localhost}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/api/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 4
+      start_period: 35s
+    networks:
+      - chess-network
+
+  # ----------------------------------------------------
+  # 3. Nginx + React Frontend Client Service
+  # ----------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: chess-arena-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "5173:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - chess-network
+
+# ------------------------------------------------------
+# Named Volumes and Networks
+# ------------------------------------------------------
+volumes:
+  postgres_data:
+    name: chess_arena_postgres_data
+
+networks:
+  chess-network:
+    name: chess_arena_network
+    driver: bridge

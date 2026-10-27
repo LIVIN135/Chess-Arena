@@ -1,0 +1,52 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/600.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0E1116;
+  --bg-surface: #161B22;
+  --bg-surface-elevated: #1F242C;
+  --border-color: #21262D;
+  --border-subtle: #30363D;
+  --color-primary: #7FB069;
+  --color-primary-hover: #90C27A;
+  --text-main: #F0F6FC;
+  --text-secondary: #8B949E;
+  --text-muted: #484F58;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0E1116;
+  color: #F0F6FC;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0E1116;
+}
+::-webkit-scrollbar-thumb {
+  background: #21262D;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #30363D;
+}

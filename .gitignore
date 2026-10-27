@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+target/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+*.jar
+*.war
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+!.env.docker
+**/.env
+**/.env.*
+!**/.env.example
+*.log
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.iml
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Flutter & Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+
